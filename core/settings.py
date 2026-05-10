@@ -123,3 +123,11 @@ STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 ALLOWED_HOSTS = ['*']  # For now, allow everything. Later, put your specific URL here.
+CSRF_TRUSTED_ORIGINS = [
+    'https://heartconnectintl-production.up.railway.app',
+]
+# Force HTTPS and security settings
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
