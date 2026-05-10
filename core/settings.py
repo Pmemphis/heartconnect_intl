@@ -76,29 +76,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-import dj_database_url
-import os
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Bulletproof Database Config
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}",
-        conn_max_age=600,
-        ssl_require=True if os.environ.get('DATABASE_URL') else False
+        default=os.environ.get('DATABASE_URL')
     )
 }
-
-# Ensure the ENGINE is explicitly set if dj_database_url fails for some reason
-if not DATABASES['default'].get('ENGINE'):
-    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
-
-
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
