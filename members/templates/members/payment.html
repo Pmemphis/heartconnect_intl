@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Payment - HeartConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-rose-50 h-screen flex items-center justify-center p-6">
+    <div class="max-w-md w-full bg-white p-8 rounded-3xl shadow-2xl text-center">
+        <div class="text-rose-500 text-6xl mb-4">💳</div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Final Step: Payment</h2>
+        <p class="text-gray-600 mb-6">To activate your profile and start matching, please complete the <strong>$15 USD</strong> registration fee.</p>
+        
+        <div class="bg-rose-50 p-4 rounded-2xl mb-6 text-left border border-rose-100">
+            <p class="text-sm font-bold text-rose-700 uppercase">Payment Instructions:</p>
+            <ul class="text-sm text-gray-700 list-disc ml-4 mt-2">
+                <li>Send via M-Pesa / International Transfer</li>
+                <li>Take a screenshot of the confirmation</li>
+                <li>Click the button below to verify via WhatsApp</li>
+            </ul>
+        </div>
+
+        <a href="{{ whatsapp_url }}" class="block w-full bg-green-500 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-green-600 transition flex items-center justify-center gap-2">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="w-6 h-6" alt="WA">
+            Confirm on WhatsApp
+        </a>
+        
+        <a href="/" class="block mt-4 text-sm text-gray-400 hover:underline text-center">Back to Home</a>
+    </div>
+</body>
+</html>

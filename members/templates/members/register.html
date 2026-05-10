@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join HeartConnect ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* This helps style the Django-generated labels and inputs */
+        p { margin-bottom: 1rem; }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 0.75rem; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 0.5rem;
+            margin-top: 0.25rem;
+        }
+        label { font-weight: 600; color: #4a5568; }
+    </style>
+</head>
+<body class="bg-rose-50 py-12 px-4">
+    <div class="max-w-xl mx-auto bg-white p-10 rounded-3xl shadow-2xl">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-rose-600">Start Your Journey</h2>
+            <p class="text-gray-500">Fill in your details to meet your international match.</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-2">
+            {% csrf_token %}
+            {{ form.as_p }}
+            
+            <div class="pt-6">
+                <button type="submit" class="w-full bg-rose-500 text-white py-4 rounded-xl font-bold text-xl shadow-lg hover:bg-rose-600 transition-all transform hover:scale-[1.02]">
+                    Register & Continue ($15)
+                </button>
+            </div>
+        </form>
+        
+        <p class="text-center text-xs text-gray-400 mt-6">
+            By clicking register, you agree to our privacy terms. Your data is encrypted and secure.
+        </p>
+    </div>
+</body>
+</html>
