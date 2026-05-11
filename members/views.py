@@ -18,7 +18,7 @@ def register(request):
 
 def payment(request, user_id):
     user = Applicant.objects.get(id=user_id)
-    phone = "254752034582" # Put your M-Pesa/WhatsApp number here
+    phone = "+639487630665" # Put your M-Pesa/WhatsApp number here
     text = f"Hello, I am {user.full_name}. I just registered on HeartConnect and want to pay the $15 fee."
     whatsapp_url = f"https://wa.me/{phone}?text={urllib.parse.quote(text)}"
     
