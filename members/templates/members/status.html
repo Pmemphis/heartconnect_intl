@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Account status | HeartConnect Global</title><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-rose-50 min-h-screen grid place-items-center p-5"><main class="bg-white rounded-3xl shadow-xl p-8 w-full max-w-lg text-center"><h1 class="text-2xl font-bold text-rose-600">Your membership status</h1>
+{% if applicant.status == 'payment_pending' %}<p class="mt-4 text-gray-700">Complete your KES 130 subscription payment to send your profile for confirmation.</p><a class="inline-block mt-5 rounded-xl bg-rose-600 text-white font-bold px-6 py-3" href="{% url 'payment' applicant.id %}">Continue to payment</a>
+{% elif applicant.status == 'awaiting_confirmation' %}<p class="mt-4 text-gray-700">Your payment is confirmed and your profile is awaiting review. We’ll email you when your account is confirmed.</p>
+{% elif applicant.status == 'rejected' %}<p class="mt-4 text-gray-700">Your profile was not approved. Please contact support if you need help.</p>{% endif %}
+<form method="post" action="{% url 'logout' %}" class="mt-6">{% csrf_token %}<button class="text-gray-500 underline">Log out</button></form></main></body></html>
