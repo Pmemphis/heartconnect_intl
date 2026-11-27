@@ -27,7 +27,11 @@ class Applicant(models.Model):
     # Preferences
     pref_age = models.CharField(max_length=50)
     pref_countries = models.CharField(max_length=255)
-    relationship_goal = models.CharField(max_length=20, choices=GOAL_CHOICES)
+    introduction = models.TextField(max_length=500, blank=True)
+    languages = models.CharField(max_length=255, blank=True, help_text='Languages you can chat in, separated by commas.')
+    interests = models.CharField(max_length=255, blank=True, help_text='Topics you enjoy, separated by commas.')
+    # Retained for existing records but hidden from the chat-focused signup flow.
+    relationship_goal = models.CharField(max_length=20, choices=GOAL_CHOICES, default='Friendship')
     
     profile_photo = models.ImageField(upload_to='profiles/')
     account = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='member_profile', null=True, blank=True)
@@ -57,3 +61,61 @@ class MpesaPayment(models.Model):
 
     def __str__(self):
         return f'{self.applicant.full_name} — KES {self.amount} ({self.status})'
+
+
+class Conversation(models.Model):
+    member_one = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name='conversations_as_one')
+    member_two = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name='conversations_as_two')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['member_one', 'member_two'], name='unique_member_conversation'),
+            models.CheckConstraint(condition=~models.Q(member_one=models.F('member_two')), name='conversation_members_differ'),
+        ]
+        ordering = ['-updated_at']
+
+    def __str__(self):
+        return f'{self.member_one} and {self.member_two}'
+
+    def has_member(self, applicant):
+        return applicant.pk in (self.member_one_id, self.member_two_id)
+
+    def other_member(self, applicant):
+        return self.member_two if self.member_one_id == applicant.pk else self.member_one
+
+
+class ChatMessage(models.Model):
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name='sent_chat_messages')
+    body = models.TextField(max_length=2000)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f'Message from {self.sender} at {self.created_at:%Y-%m-%d %H:%M}'
+
+
+class MemberBlock(models.Model):
+    blocker = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name='blocks_made')
+    blocked = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name='blocks_received')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['blocker', 'blocked'], name='unique_member_block'),
+            models.CheckConstraint(condition=~models.Q(blocker=models.F('blocked')), name='member_cannot_block_self'),
+        ]
+
+
+class ChatReport(models.Model):
+    STATUS_CHOICES = [('open', 'Open'), ('reviewed', 'Reviewed'), ('closed', 'Closed')]
+    reporter = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name='chat_reports_made')
+    reported = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name='chat_reports_received')
+    conversation = models.ForeignKey(Conversation, on_delete=models.SET_NULL, null=True, blank=True, related_name='reports')
+    reason = models.TextField(max_length=1000)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
+    created_at = models.DateTimeField(auto_now_add=True)

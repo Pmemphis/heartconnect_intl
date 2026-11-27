@@ -1,0 +1,47 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Chat with {{ other.full_name }} | HeartConnect Global</title><script src="https://cdn.tailwindcss.com"></script><style>textarea{width:100%;resize:vertical;border:1px solid #cbd5e1;border-radius:.75rem;padding:.75rem .9rem;outline:none}textarea:focus{border-color:#0f766e;box-shadow:0 0 0 3px rgb(15 118 110 / .14)}</style></head>
+<body class="min-h-screen bg-slate-50 text-slate-800"><header class="sticky top-0 z-10 border-b border-slate-200 bg-white"><nav class="mx-auto flex max-w-3xl items-center justify-between px-4 py-3"><a href="{% url 'inbox' %}" class="text-sm font-semibold text-teal-800">← Inbox</a><div class="text-center"><p class="font-bold text-slate-900">{{ other.full_name }}</p><p class="text-xs text-slate-500">{{ other.country }} · Friendly chat</p></div><a href="{% url 'member_directory' %}" class="text-sm font-semibold text-slate-600">Community</a></nav></header>
+<main class="mx-auto flex min-h-[calc(100vh-65px)] max-w-3xl flex-col px-4 py-5"><div class="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-5 text-amber-950">Be kind and protect your personal details. Never send money or share passwords. Report or block anyone who makes you uncomfortable. New messages appear automatically.</div>
+{% if messages %}<div class="mb-3 space-y-2">{% for message in messages %}<p class="rounded-xl bg-teal-50 p-3 text-sm text-teal-900">{{ message }}</p>{% endfor %}</div>{% endif %}
+<section id="chat-messages" data-updates-url="{% url 'conversation_updates' conversation.id %}" data-last-id="0" class="flex-1 space-y-3 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6" aria-label="Chat messages" aria-live="polite">{% for message in messages_list %}<div data-message-id="{{ message.id }}" class="flex {% if message.sender_id == applicant.id %}justify-end{% else %}justify-start{% endif %}"><article class="max-w-[85%] rounded-2xl px-4 py-3 {% if message.sender_id == applicant.id %}bg-teal-700 text-white{% else %}bg-slate-100 text-slate-800{% endif %}"><p class="whitespace-pre-wrap break-words text-sm leading-6">{{ message.body }}</p><time class="mt-1 block text-right text-[11px] opacity-75">{{ message.created_at|date:'M j, H:i' }}</time></article></div>{% empty %}<div id="chat-empty" class="grid min-h-48 place-items-center text-center"><div><p class="font-semibold text-slate-800">Say hello to {{ other.full_name }}</p><p class="mt-1 text-sm text-slate-500">A simple question about their interests is a good place to start.</p></div></div>{% endfor %}</section>
+<form method="post" class="mt-3 rounded-2xl border border-slate-200 bg-white p-3">{% csrf_token %}{{ form.body }}{% for error in form.body.errors %}<p class="mt-1 text-sm text-red-700">{{ error }}</p>{% endfor %}<div class="mt-2 flex items-center justify-between gap-3"><p class="text-xs text-slate-500">Keep it respectful. Messages are limited to 2,000 characters.</p><button class="shrink-0 rounded-xl bg-teal-700 px-5 py-2.5 font-bold text-white hover:bg-teal-800">Send</button></div></form>
+<details class="mt-3 rounded-xl border border-slate-200 bg-white p-4"><summary class="cursor-pointer text-sm font-semibold text-slate-600">Safety options</summary><div class="mt-4 grid gap-5 sm:grid-cols-2"><form method="post" action="{% url 'conversation_safety' conversation.id %}" onsubmit="return confirm('Block {{ other.full_name }}? They will no longer be able to message you.');">{% csrf_token %}<input type="hidden" name="action" value="block"><p class="mb-2 text-sm text-slate-600">Stop this member from contacting you.</p><button class="rounded-lg border border-red-200 px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-50">Block member</button></form><form method="post" action="{% url 'conversation_safety' conversation.id %}">{% csrf_token %}<input type="hidden" name="action" value="report"><label class="mb-1 block text-sm font-semibold text-slate-700" for="id_reason">{{ report_form.reason.label }}</label>{{ report_form.reason }}{% for error in report_form.reason.errors %}<p class="text-sm text-red-700">{{ error }}</p>{% endfor %}<button class="mt-2 rounded-lg border border-amber-300 px-3 py-2 text-sm font-semibold text-amber-900 hover:bg-amber-50">Send report to review team</button></form></div></details></main>
+<script>
+(() => {
+  const panel = document.getElementById('chat-messages');
+  let lastId = Array.from(panel.querySelectorAll('[data-message-id]')).reduce((max, node) => Math.max(max, Number(node.dataset.messageId)), 0);
+  const addMessage = (message) => {
+    document.getElementById('chat-empty')?.remove();
+    const row = document.createElement('div');
+    row.className = `flex ${message.sent_by_you ? 'justify-end' : 'justify-start'}`;
+    row.dataset.messageId = message.id;
+    const bubble = document.createElement('article');
+    bubble.className = `max-w-[85%] rounded-2xl px-4 py-3 ${message.sent_by_you ? 'bg-teal-700 text-white' : 'bg-slate-100 text-slate-800'}`;
+    const body = document.createElement('p');
+    body.className = 'whitespace-pre-wrap break-words text-sm leading-6';
+    body.textContent = message.body;
+    const time = document.createElement('time');
+    time.className = 'mt-1 block text-right text-[11px] opacity-75';
+    time.dateTime = message.created_at;
+    time.textContent = new Date(message.created_at).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+    bubble.append(body, time);
+    row.append(bubble);
+    panel.append(row);
+  };
+  const poll = async () => {
+    if (document.hidden) return;
+    try {
+      const nearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 140;
+      const response = await fetch(`${panel.dataset.updatesUrl}?after=${lastId}`, {credentials: 'same-origin', headers: {'Accept': 'application/json'}});
+      if (!response.ok) return;
+      const data = await response.json();
+      for (const message of data.messages) {
+        addMessage(message);
+        lastId = Math.max(lastId, message.id);
+      }
+      if (data.messages.length && nearBottom) window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+    } catch (_) { /* Retry on the next polling interval. */ }
+  };
+  window.scrollTo({top: document.body.scrollHeight});
+  window.setInterval(poll, 5000);
+})();
+</script></body></html>

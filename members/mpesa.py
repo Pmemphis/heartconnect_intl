@@ -48,7 +48,7 @@ def initiate_stk_push(phone, account_reference):
         'PhoneNumber': phone,
         'CallBackURL': callback,
         'AccountReference': account_reference[:12],
-        'TransactionDesc': 'HeartConnect subscription',
+        'TransactionDesc': 'HeartConnect one-time membership',
     }
     return _post_json(f'{base}/mpesa/stkpush/v1/processrequest', payload, {
         'Authorization': f"Bearer {token_data['access_token']}"

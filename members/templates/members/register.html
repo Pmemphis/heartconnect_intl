@@ -1,44 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join HeartConnect Global</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create your chat profile | HeartConnect Global</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* This helps style the Django-generated labels and inputs */
-        p { margin-bottom: 1rem; }
-        input, select, textarea { 
-            width: 100%; 
-            padding: 0.75rem; 
-            border: 1px solid #e2e8f0; 
-            border-radius: 0.5rem;
-            margin-top: 0.25rem;
+        body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        form p { margin: 0 0 1rem; }
+        form label { display: block; color: #334155; font-size: .875rem; font-weight: 600; margin-bottom: .4rem; }
+        form input:not([type=checkbox]), form select, form textarea {
+            display: block; width: 100%; border: 1px solid #cbd5e1; border-radius: .75rem;
+            background: #fff; padding: .75rem .9rem; color: #0f172a; outline: none;
+            transition: border-color .15s, box-shadow .15s;
         }
-        label { font-weight: 600; color: #4a5568; }
+        form input:focus, form select:focus, form textarea:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgb(15 118 110 / .14); }
+        form input[type=file] { padding: .6rem; }
+        form input[type=checkbox] { width: 1rem; height: 1rem; accent-color: #0f766e; }
+        form textarea { min-height: 7rem; }
+        form .helptext { display:block; color:#64748b; font-size:.8rem; margin-top:.35rem; }
+        form ul.errorlist { color:#b91c1c; font-size:.85rem; margin:.3rem 0; }
     </style>
 </head>
-<body class="bg-rose-50 py-12 px-4">
-    <div class="max-w-xl mx-auto bg-white p-10 rounded-3xl shadow-2xl">
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold text-rose-600">Start Your Journey</h2>
-            <p class="text-gray-500">Create your profile to connect with eligible adult members from outside Africa after your account is confirmed.</p>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+    <header class="border-b border-slate-200 bg-white">
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+            <a href="/" class="font-bold tracking-tight text-teal-800">HeartConnect <span class="font-medium text-slate-500">Global</span></a>
+            <a href="{% url 'login' %}" class="text-sm font-semibold text-teal-800 hover:text-teal-950">Already registered? Sign in</a>
         </div>
-
-        <form method="POST" enctype="multipart/form-data" class="space-y-2">
-            {% csrf_token %}
-            {{ form.as_p }}
-            
-            <div class="pt-6">
-                <button type="submit" class="w-full bg-rose-500 text-white py-4 rounded-xl font-bold text-xl shadow-lg hover:bg-rose-600 transition-all transform hover:scale-[1.02]">
-                    Create Profile & Continue (KES 130)
-                </button>
+    </header>
+    <main class="mx-auto grid max-w-6xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[.8fr_1.2fr] lg:gap-12 lg:py-12">
+        <aside class="h-fit rounded-3xl bg-gradient-to-br from-teal-900 via-teal-800 to-slate-900 p-7 text-white shadow-lg sm:p-9 lg:sticky lg:top-8">
+            <span class="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-100">Friendly international chat</span>
+            <h1 class="mt-6 text-3xl font-bold leading-tight sm:text-4xl">Good conversations can cross borders.</h1>
+            <p class="mt-4 leading-7 text-teal-50">Create a profile to chat with wazungu and older adults in other countries who are looking for friendly company.</p>
+            <div class="mt-8 space-y-4">
+                <div class="flex gap-3"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-amber-400 text-sm font-bold text-slate-900">1</span><p><strong>Build your profile</strong><br><span class="text-sm text-teal-100">Tell us a little about yourself.</span></p></div>
+                <div class="flex gap-3"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-amber-400 text-sm font-bold text-slate-900">2</span><p><strong>Pay KES 130 once</strong><br><span class="text-sm text-teal-100">M-Pesa STK Push · no automatic renewal.</span></p></div>
+                <div class="flex gap-3"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-amber-400 text-sm font-bold text-slate-900">3</span><p><strong>Wait for email confirmation</strong><br><span class="text-sm text-teal-100">We review profiles before granting access.</span></p></div>
             </div>
-        </form>
-        
-        <p class="text-center text-xs text-gray-400 mt-6">
-            You must be at least 18. Your profile stays private while it is reviewed. Please review our privacy terms before registering.
-        </p>
-    </div>
+            <p class="mt-8 border-t border-white/15 pt-5 text-sm text-teal-100">A paid conversation and companionship service for adults. Not a dating or matchmaking platform.</p>
+        </aside>
+
+        <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 lg:p-10">
+            <div class="mb-7">
+                <p class="text-sm font-bold uppercase tracking-wider text-teal-700">Step 1 of 3 · Create profile</p>
+                <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Join the chat community</h2>
+                <p class="mt-2 text-slate-600">Use accurate details so we can review your account and contact you.</p>
+            </div>
+            {% if form.non_field_errors %}<div class="mb-5 rounded-xl bg-red-50 p-3 text-sm text-red-700">{{ form.non_field_errors }}</div>{% endif %}
+            <form method="POST" enctype="multipart/form-data" class="space-y-1">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="pt-3">
+                    <button type="submit" class="w-full rounded-xl bg-teal-700 px-5 py-3.5 font-bold text-white shadow-sm transition hover:bg-teal-800 focus:outline-none focus:ring-4 focus:ring-teal-700/20">Continue to KES 130 payment <span aria-hidden="true">→</span></button>
+                </div>
+            </form>
+            <p class="mt-5 text-center text-xs leading-5 text-slate-500">You must be 18 or older. Your profile is reviewed before access. By continuing, you agree to respectful, non-romantic conversation.</p>
+        </section>
+    </main>
 </body>
 </html>
