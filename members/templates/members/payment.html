@@ -3,22 +3,24 @@
 <body class="min-h-screen bg-slate-50 px-4 py-8 text-slate-800 sm:grid sm:place-items-center"><style>form input{display:block;width:100%;border:1px solid #cbd5e1;border-radius:.75rem;background:#fff;padding:.75rem .9rem;color:#0f172a}form input:focus{outline:3px solid rgb(15 118 110 / .14);border-color:#0f766e}</style>
 <main class="mx-auto w-full max-w-lg overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
     <div class="bg-gradient-to-r from-teal-900 to-teal-700 px-7 py-7 text-white sm:px-9">
-        <p class="text-sm font-semibold uppercase tracking-wider text-teal-100">Step 2 of 3 · Membership</p>
+            <p class="text-sm font-semibold uppercase tracking-wider text-teal-100">Earner joining fee</p>
         <h1 class="mt-2 text-2xl font-bold">Pay with M-Pesa</h1>
         <p class="mt-2 text-sm leading-6 text-teal-50">Your profile will be sent for review after the payment is confirmed.</p>
     </div>
     <div class="p-6 sm:p-9">
         <div class="mb-6 flex items-center justify-between rounded-2xl bg-slate-50 p-4">
-            <div><p class="font-semibold text-slate-900">Chat community membership</p><p class="mt-1 text-sm text-slate-500">One-time payment · no automatic renewal</p></div>
-            <p class="text-xl font-bold text-slate-900">KES 130</p>
+            <div><p class="font-semibold text-slate-900">One-time earner joining fee</p><p class="mt-1 text-sm text-slate-500">$3.99 converted to KES for M-Pesa</p></div>
+            {% if amount_kes %}<p class="text-xl font-bold text-slate-900">KES {{ amount_kes }}</p>{% endif %}
         </div>
+        {% if amount_kes %}
         <form method="post" class="space-y-4">
             {% csrf_token %}
             {% for field in form %}<div><label for="{{ field.id_for_label }}" class="mb-1 block text-sm font-semibold text-slate-700">M-Pesa phone number</label>{{ field }}{% if field.help_text %}<p class="mt-1 text-xs text-slate-500">{{ field.help_text }}</p>{% endif %}{% for error in field.errors %}<p class="mt-1 text-sm text-red-700">{{ error }}</p>{% endfor %}</div>{% endfor %}
             <button type="submit" class="w-full rounded-xl bg-teal-700 px-5 py-3.5 font-bold text-white hover:bg-teal-800 focus:outline-none focus:ring-4 focus:ring-teal-700/20">Send STK Push</button>
         </form>
+        {% else %}<p class="rounded-xl bg-amber-50 p-4 text-sm leading-6 text-amber-950">M-Pesa is not configured for the joining fee yet. Please contact support.</p>{% endif %}
         {% for message in messages %}<p class="my-3 rounded-xl bg-teal-50 p-3 text-sm text-teal-900">{{ message }}</p>{% endfor %}
-        <p class="mt-5 text-center text-sm leading-6 text-slate-500">KES 130 is a one-time payment with no automatic renewal. After payment, wait for an email confirming your profile review. Chat access follows approval.</p>
+        <p class="mt-5 text-center text-sm leading-6 text-slate-500">After payment, wait for an email confirming your profile review. You can receive paid service assignments after approval.</p>
         <a href="/" class="mt-5 block text-center text-sm font-semibold text-teal-800 hover:underline">Back to home</a>
     </div>
 </main></body></html>

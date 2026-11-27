@@ -23,7 +23,7 @@ def _get_json(url, headers=None):
         return json.loads(response.read().decode())
 
 
-def initiate_stk_push(phone, account_reference):
+def initiate_stk_push(phone, account_reference, amount):
     key = os.environ.get('MPESA_CONSUMER_KEY')
     secret = os.environ.get('MPESA_CONSUMER_SECRET')
     shortcode = os.environ.get('MPESA_SHORTCODE')
@@ -41,14 +41,14 @@ def initiate_stk_push(phone, account_reference):
         'BusinessShortCode': shortcode,
         'Password': password,
         'Timestamp': timestamp,
-        'TransactionType': 'CustomerPayBillOnline',
-        'Amount': 130,
+        'TransactionType': os.environ.get('MPESA_TRANSACTION_TYPE', 'CustomerPayBillOnline'),
+        'Amount': amount,
         'PartyA': phone,
         'PartyB': shortcode,
         'PhoneNumber': phone,
         'CallBackURL': callback,
         'AccountReference': account_reference[:12],
-        'TransactionDesc': 'HeartConnect one-time membership',
+        'TransactionDesc': 'HeartConnect earner joining fee',
     }
     return _post_json(f'{base}/mpesa/stkpush/v1/processrequest', payload, {
         'Authorization': f"Bearer {token_data['access_token']}"

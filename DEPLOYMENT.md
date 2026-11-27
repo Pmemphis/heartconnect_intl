@@ -1,23 +1,38 @@
-# Vercel deployment preparation
+# Vercel deployment and paid services
 
-Vercel detects this Django project directly from `manage.py` and `requirements.txt`; a custom `api/` wrapper or `vercel.json` is not needed.
+Vercel detects the Django project from `manage.py` and `requirements.txt`. The Vercel build script runs database migrations from `scripts/vercel_migrate.py`.
 
-## Before the first deployment
+## Environment variables
 
-1. Push the project to the Git provider connected to Vercel and import it as a Django project.
-2. Provision Neon PostgreSQL and add its pooled connection string as `DATABASE_URL` and its direct connection string as `DATABASE_URL_UNPOOLED` in Vercel. Use separate Neon branches for Preview and Production.
-3. Add a unique `SECRET_KEY` and set `DEBUG=False` in Vercel. Set `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS` for the Vercel URL and any custom domain.
-4. Add `CLOUDINARY_URL` from Cloudinary's API environment settings. The upload backend saves profile images as private assets and issues short-lived signed download URLs.
-5. Configure email delivery with `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `EMAIL_USE_TLS`, and `DEFAULT_FROM_EMAIL`.
-6. Configure Daraja credentials and set `MPESA_CALLBACK_URL` to the deployed HTTPS URL ending in `/payments/mpesa/callback/`. Start with sandbox credentials.
-7. Vercel runs `scripts/vercel_migrate.py` during each build. It uses Neon's direct connection URL for migrations; make sure each Vercel environment points to the intended Neon branch.
+Keep all secrets in Vercel Project Settings → Environment Variables. Do not commit `.env` or paste credentials into chat.
 
-## Member photos must use persistent storage
+Required base settings:
 
-Uploaded profile images use the custom Cloudinary storage backend when `CLOUDINARY_URL` is configured. It stores originals as private Cloudinary assets and generates short-lived signed URLs. Set `CLOUDINARY_URL` in Vercel before accepting registrations. If importing existing member records, migrate their old local image files into Cloudinary and update the stored file names before switching traffic.
+- `SECRET_KEY`, `DEBUG=False`, `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, and `CLOUDINARY_URL`.
+- `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS` for the Vercel domain and any custom domain.
+- Email SMTP variables to deliver account and assignment notices.
 
-Static assets are collected from `STATIC_ROOT` and served by Vercel. Do not use SQLite for Vercel production data; this project now requires `DATABASE_URL` outside local debug mode.
+Earner M-Pesa joining fee:
 
-## Chat infrastructure
+- `MPESA_CONSUMER_KEY`, `MPESA_CONSUMER_SECRET`, `MPESA_SHORTCODE`, `MPESA_PASSKEY`, `MPESA_CALLBACK_URL`, and `MPESA_ENV`.
+- Set `MPESA_TRANSACTION_TYPE=CustomerBuyGoodsOnline` for a Till, or `CustomerPayBillOnline` for a Paybill.
+- Set `PROVIDER_JOINING_FEE_KES` to the KES amount you choose for the $3.99 fee. Daraja STK Push charges integer KES; update this value when your conversion rate changes.
+- Set `PAYOUT_USD_KES_RATE` to the USD-to-KES rate the team will use for M-Pesa and Airtel payouts. The app freezes the rate and rounded KES amount into each payout record when a booking is assigned. PayPal payouts remain in USD.
 
-When real-time chat is added, use a hosted realtime service or a separately managed WebSocket service. Store conversations and messages in PostgreSQL; do not rely on process memory or local files.
+Foreign customer checkout:
+
+- `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`. Configure a Stripe webhook at `/payments/stripe/webhook/` for `checkout.session.completed` and `checkout.session.async_payment_succeeded`.
+- `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, and `PAYPAL_ENV`. Use `sandbox` while testing and `live` for the production API.
+- The app marks Stripe payments paid only after a signature-verified webhook. PayPal payments are captured and verified server-side after the payer returns.
+
+## Service operations
+
+- Customers pay the $8.50 joining fee, then pay separately for each booking.
+- Earner rates are $3–$5 per chat hour and $15–$25 per two-hour Kiswahili lesson. The current setup pays the same amount to the earner as the customer’s service price.
+- A paid booking appears in Django Admin. Changing it to **Assigned** creates a payout record using the earner’s chosen method and destination. Admin staff must send the payout and mark the record **Paid** with its transfer reference; M-Pesa, Airtel Money, and PayPal payouts are not sent automatically by this app yet.
+- For a lesson, staff add the Google Meet (or other voice/video) URL in the booking before assigning it. The app stores and shares the link; it does not create meetings through the Google API.
+- Bookings and chat schedules use East Africa Time.
+
+## Persistent files and data
+
+Uploaded profile photos use the private Cloudinary storage backend. Set `CLOUDINARY_URL` before accepting registrations. Vercel filesystems are ephemeral; use Neon PostgreSQL for application data and do not use SQLite in production.

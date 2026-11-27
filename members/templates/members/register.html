@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Create your chat profile | HeartConnect Global</title>
+    <title>Join as an earner | HeartConnect Global</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -31,32 +31,32 @@
     </header>
     <main class="mx-auto grid max-w-6xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[.8fr_1.2fr] lg:gap-12 lg:py-12">
         <aside class="h-fit rounded-3xl bg-gradient-to-br from-teal-900 via-teal-800 to-slate-900 p-7 text-white shadow-lg sm:p-9 lg:sticky lg:top-8">
-            <span class="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-100">Friendly international chat</span>
-            <h1 class="mt-6 text-3xl font-bold leading-tight sm:text-4xl">Good conversations can cross borders.</h1>
-            <p class="mt-4 leading-7 text-teal-50">Create a profile to chat with wazungu and older adults in other countries who are looking for friendly company.</p>
+            <span class="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-100">Earn with conversation or Kiswahili</span>
+            <h1 class="mt-6 text-3xl font-bold leading-tight sm:text-4xl">Share your time and skills with customers abroad.</h1>
+            <p class="mt-4 leading-7 text-teal-50">Offer paid one-to-one conversation, two-hour Kiswahili lessons, or both. Set a rate inside the listed range and choose how you want to receive payouts.</p>
             <div class="mt-8 space-y-4">
                 <div class="flex gap-3"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-amber-400 text-sm font-bold text-slate-900">1</span><p><strong>Build your profile</strong><br><span class="text-sm text-teal-100">Tell us a little about yourself.</span></p></div>
-                <div class="flex gap-3"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-amber-400 text-sm font-bold text-slate-900">2</span><p><strong>Pay KES 130 once</strong><br><span class="text-sm text-teal-100">M-Pesa STK Push · no automatic renewal.</span></p></div>
+                <div class="flex gap-3"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-amber-400 text-sm font-bold text-slate-900">2</span><p><strong>Pay the $3.99 joining fee</strong><br><span class="text-sm text-teal-100">M-Pesa STK Push in the configured KES equivalent.</span></p></div>
                 <div class="flex gap-3"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-amber-400 text-sm font-bold text-slate-900">3</span><p><strong>Wait for email confirmation</strong><br><span class="text-sm text-teal-100">We review profiles before granting access.</span></p></div>
             </div>
-            <p class="mt-8 border-t border-white/15 pt-5 text-sm text-teal-100">A paid conversation and companionship service for adults. Not a dating or matchmaking platform.</p>
+            <p class="mt-8 border-t border-white/15 pt-5 text-sm text-teal-100">Chat: $3–$5 per hour · Kiswahili: $15–$25 per two-hour lesson.</p>
         </aside>
 
         <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 lg:p-10">
             <div class="mb-7">
-                <p class="text-sm font-bold uppercase tracking-wider text-teal-700">Step 1 of 3 · Create profile</p>
-                <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Join the chat community</h2>
-                <p class="mt-2 text-slate-600">Use accurate details so we can review your account and contact you.</p>
+                <p class="text-sm font-bold uppercase tracking-wider text-teal-700">Earner application</p>
+                <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Create your service profile</h2>
+                <p class="mt-2 text-slate-600">Choose the services you offer, set your rate, and enter payout details. Our team reviews new earner profiles.</p>
             </div>
             {% if form.non_field_errors %}<div class="mb-5 rounded-xl bg-red-50 p-3 text-sm text-red-700">{{ form.non_field_errors }}</div>{% endif %}
             <form method="POST" enctype="multipart/form-data" class="space-y-1">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <div class="pt-3">
-                    <button type="submit" class="w-full rounded-xl bg-teal-700 px-5 py-3.5 font-bold text-white shadow-sm transition hover:bg-teal-800 focus:outline-none focus:ring-4 focus:ring-teal-700/20">Continue to KES 130 payment <span aria-hidden="true">→</span></button>
+                    <button type="submit" class="w-full rounded-xl bg-teal-700 px-5 py-3.5 font-bold text-white shadow-sm transition hover:bg-teal-800 focus:outline-none focus:ring-4 focus:ring-teal-700/20">Continue to $3.99 joining payment <span aria-hidden="true">→</span></button>
                 </div>
             </form>
-            <p class="mt-5 text-center text-xs leading-5 text-slate-500">You must be 18 or older. Your profile is reviewed before access. By continuing, you agree to respectful, non-romantic conversation.</p>
+            <p class="mt-5 text-center text-xs leading-5 text-slate-500">You must be 18 or older. The joining fee is paid once. Payouts are sent using your selected M-Pesa, Airtel Money, or PayPal destination after a paid booking is assigned.</p>
         </section>
     </main>
 </body>

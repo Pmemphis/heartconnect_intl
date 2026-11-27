@@ -1,4 +1,5 @@
 import os
+from decimal import Decimal
 import dj_database_url
 import environ
 from pathlib import Path
@@ -94,7 +95,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 USE_I18N = True
 USE_TZ = True
 
@@ -143,8 +144,16 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'HeartConnect Global <no-reply@heartconnectintl.com>')
+PROVIDER_JOINING_FEE_KES = os.environ.get('PROVIDER_JOINING_FEE_KES', '')
+PAYOUT_USD_KES_RATE = os.environ.get('PAYOUT_USD_KES_RATE', '')
+CUSTOMER_JOINING_FEE_USD = Decimal('8.50')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID', '')
+PAYPAL_CLIENT_SECRET = os.environ.get('PAYPAL_CLIENT_SECRET', '')
+PAYPAL_ENV = os.environ.get('PAYPAL_ENV', 'sandbox')
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'member_dashboard'
+LOGIN_REDIRECT_URL = 'account_home'
 LOGOUT_REDIRECT_URL = 'home'
 
 # Default primary key field type
